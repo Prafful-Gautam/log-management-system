@@ -1,0 +1,32 @@
+services:
+  # log_server:
+  #   build: .
+  #   ports: 
+  #     - "8000:8000"
+  #   depends_on:
+  #     - loki
+  #     - prom-server  
+  prom-server:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
+
+  loki:
+    image: grafana/loki:3.0.0
+    ports:
+      - "3100:3100"
+    # volumes:
+    #   - ./loki-config.yaml:/etc/loki/local-config.yaml
+    # command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - "3000:3000"
+    # environment:
+    #   - GF_AUTH_ANONYMOUS_ENABLED=true
+    #   - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    depends_on:
+      - loki
